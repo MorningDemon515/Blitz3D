@@ -24,6 +24,11 @@ void  bbRuntimeError( BBStr *str ){
 	RTEX( err );
 }
 
+void bbErrorLog()
+{
+	
+}
+
 int   bbExecFile( BBStr *f ){
 	string t=*f;delete f;
 	int n=gx_runtime->execute( t );
