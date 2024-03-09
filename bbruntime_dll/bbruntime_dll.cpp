@@ -8,6 +8,8 @@
 #include "../shareprot/shareprot.h"
 #endif
 
+#include "../gxruntime/gxutf8.h"
+
 using namespace std;
 
 #include <map>
@@ -25,7 +27,7 @@ public:
 	virtual void debugLeave(){}
 	virtual void debugLog( const char *msg ){}
 	virtual void debugMsg( const char *e,bool serious ){
-		if( serious ) MessageBox( 0,e,"Error!",MB_OK|MB_TOPMOST|MB_SETFOREGROUND );
+		if (serious) MessageBoxW(0, UTF8::convertToUtf16(e).c_str(), L"Error!", MB_OK | MB_TOPMOST | MB_SETFOREGROUND);
 	}
 	virtual void debugSys( void *msg ){}
 };
@@ -99,8 +101,10 @@ void Runtime::execute( void (*pc)(),const char *args,Debugger *dbg ){
 
 	trackmem( true );
 
+#ifndef _DEBUG
 	_se_translator_function old_trans=_set_se_translator( seTranslator );
 	_control87( _RC_NEAR|_PC_24|_EM_INVALID|_EM_ZERODIVIDE|_EM_OVERFLOW|_EM_UNDERFLOW|_EM_INEXACT|_EM_DENORMAL,0xfffff );
+#endif
 
 	//strip spaces from ends of args...
 	string params=args;
@@ -119,8 +123,10 @@ void Runtime::execute( void (*pc)(),const char *args,Debugger *dbg ){
 		gxRuntime::closeRuntime( t );
 	}
 
+#ifndef _DEBUG
 	_control87( _CW_DEFAULT,0xfffff );
 	_set_se_translator( old_trans );
+#endif
 }
 
 void Runtime::asyncStop(){

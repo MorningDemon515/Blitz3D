@@ -31,3 +31,30 @@ int UTF8::decodeCharacter(const char* buf, int index) {
         return newChar;
     }
 }
+
+std::wstring UTF8::convertToUtf16(const std::string& str) {
+    std::wstring result = L"";
+
+    for (int i = 0; i < str.size();) {
+        result.push_back(decodeCharacter(str.c_str(), i));
+        i += measureCodepoint(str[i]);
+    }
+
+    return result;
+}
+
+void UTF8::ANSItoUTF8(CString& strAnsi) {
+    UINT nLen = MultiByteToWideChar(GetACP(), NULL, strAnsi, -1, NULL, NULL);
+    WCHAR* wszBuffer = new WCHAR[nLen + 1];
+    nLen = MultiByteToWideChar(GetACP(), NULL, strAnsi, -1, wszBuffer, nLen);
+    wszBuffer[nLen] = 0;
+
+    nLen = WideCharToMultiByte(CP_UTF8, NULL, wszBuffer, -1, NULL, NULL, NULL, NULL);
+    CHAR* szBuffer = new CHAR[nLen + 1];
+    nLen = WideCharToMultiByte(CP_UTF8, NULL, wszBuffer, -1, szBuffer, nLen, NULL, NULL);
+    szBuffer[nLen] = 0;
+
+    strAnsi = szBuffer;
+    delete[] wszBuffer;
+    delete[] szBuffer;
+}
