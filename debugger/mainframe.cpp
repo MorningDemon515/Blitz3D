@@ -4,11 +4,12 @@
 #include "resource.h"
 #include "debuggerapp.h"
 #include "prefs.h"
+#include "../gxruntime/gxutf8.h"
 
 #define WM_IDLEUPDATECMDUI  0x0363  // wParam == bDisableIfNoHandler
 
 enum{
-	WM_STOP=WM_USER+1,WM_RUN,WM_END
+	WM_STOP=WM_APP+1,WM_RUN,WM_END
 };
 
 enum{
@@ -121,6 +122,33 @@ int MainFrame::OnCreate( LPCREATESTRUCT lpCreateStruct ){
 	return 0;
 }
 
+std::wstring MainFrame::utf8_to_wchar(const std::string& str)
+{
+	int len = MultiByteToWideChar(CP_UTF8, 0, str.c_str(), -1, NULL, 0);
+	wchar_t* wstr = new wchar_t[len];
+	MultiByteToWideChar(CP_UTF8, 0, str.c_str(), -1, wstr, len);
+	std::wstring result(wstr);
+	delete[] wstr;
+	return result;
+}
+
+CString MainFrame::ANSItoUTF8(const CStringA& str) {
+	int len = MultiByteToWideChar(CP_ACP, 0, str, -1, NULL, 0);
+	wchar_t* wstr = new wchar_t[len];
+	MultiByteToWideChar(CP_ACP, 0, str, -1, wstr, len);
+
+	len = WideCharToMultiByte(CP_UTF8, 0, wstr, -1, NULL, 0, NULL, NULL);
+	char* utf8str = new char[len];
+	WideCharToMultiByte(CP_UTF8, 0, wstr, -1, utf8str, len, NULL, NULL);
+
+	CString result(utf8str);
+
+	delete[] wstr;
+	delete[] utf8str;
+
+	return result;
+}
+
 void MainFrame::setState( int n ){
 	state=n;
 	SendMessageToDescendants( WM_IDLEUPDATECMDUI,(WPARAM)TRUE,0,TRUE,TRUE );
@@ -204,9 +232,9 @@ void MainFrame::debugLeave(){
 
 void MainFrame::debugMsg( const char *msg,bool serious ){
 	if( serious ){
-		::MessageBox( 0,msg,"Runtime Error",MB_OK|MB_ICONWARNING|MB_TOPMOST|MB_SETFOREGROUND );
+		::MessageBoxW(0, UTF8::convertToUtf16(msg).c_str(), L"Runtime Error", MB_OK | MB_ICONWARNING | MB_TOPMOST | MB_SETFOREGROUND);
 	}else{
-		::MessageBox( 0,msg,"Runtime Message",MB_OK|MB_ICONINFORMATION|MB_TOPMOST|MB_SETFOREGROUND );
+		::MessageBoxW(0, UTF8::convertToUtf16(msg).c_str(), L"Runtime Message", MB_OK | MB_ICONINFORMATION | MB_TOPMOST | MB_SETFOREGROUND);
 	}
 }
 
@@ -248,48 +276,60 @@ void MainFrame::cmdStepOut(){
 	::PostMessage( 0,WM_RUN,0,0 );
 }
 
-SourceFile *MainFrame::sourceFile(const char *file){
+SourceFile* MainFrame::sourceFile(const char* file) {
 
-	if( !file ) file="<unknown>";
+	if (!file) file = "<unknown>";
 
-	map<const char*,SourceFile*>::const_iterator it=files.find( file );
+	map<const char*, SourceFile*>::const_iterator it = files.find(file);
 
-	if( it!=files.end() ){
-		tabber.setCurrent( file_tabs[file] );
+	if (it != files.end()) {
+		tabber.setCurrent(file_tabs[file]);
 		return it->second;
 	}
 
 	//crete new source file
-	SourceFile *t=new SourceFile();
+	SourceFile* t = new SourceFile();
 
-	it=files.insert( make_pair(file,t) ).first;
+	it = files.insert(make_pair(file, t)).first;
 
-	int tab=files.size();
+	int tab = files.size();
 
 	t->Create(
-		WS_CHILD|WS_HSCROLL|WS_VSCROLL|
-		ES_NOHIDESEL|ES_MULTILINE|ES_AUTOHSCROLL|ES_AUTOVSCROLL,
-		CRect( 0,0,0,0 ),&tabber,1 );
+		WS_CHILD | WS_HSCROLL | WS_VSCROLL |
+		ES_NOHIDESEL | ES_MULTILINE | ES_AUTOHSCROLL | ES_AUTOVSCROLL,
+		CRect(0, 0, 0, 0), &tabber, 1);
 
-	if( FILE *f=fopen( file,"rb" ) ){
-		fseek( f,0,SEEK_END );
-		int sz=ftell( f );
-		fseek( f,0,SEEK_SET );
-		char *buf=new char[sz+1];
-		fread( buf,sz,1,f );
-		buf[sz]=0;
-		t->ReplaceSel( buf );
-		delete[] buf;
+	if (FILE* f = fopen(ANSItoUTF8(file), "rb")) {
+		fseek(f, 0, SEEK_END);
+		long fsize = ftell(f);
+		fseek(f, 0, SEEK_SET);
+
+		char* buf = new char[fsize + 1];
+		fread(buf, 1, fsize, f);
+		buf[fsize] = '\0';
+
 		fclose(f);
+
+		// Convert UTF-8 to wide characters
+		int len = MultiByteToWideChar(CP_UTF8, 0, buf, -1, NULL, 0);
+		wchar_t* wbuf = new wchar_t[len];
+		MultiByteToWideChar(CP_UTF8, 0, buf, -1, wbuf, len);
+
+		CString text(wbuf);
+
+		t->SetWindowText(text);
+
+		delete[] buf;
+		delete[] wbuf;
 	}
 
-	file_tabs.insert( make_pair(file,tab) );
+	file_tabs.insert(make_pair(file, tab));
 
-	if( char *p=strrchr(file,'/') ) file=p+1;
-	if( char *p=strrchr(file,'\\') ) file=p+1;
-	tabber.insert( tab,t,file );
+	if (const char* p = strrchr(file, '/')) file = p + 1;
+	if (const char* p = strrchr(file, '\\')) file = p + 1;
+	tabber.insert(tab, t, file);
 
-	tabber.setCurrent( tab );
+	tabber.setCurrent(tab);
 
 	return t;
 }

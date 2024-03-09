@@ -1,10 +1,8 @@
-*.sbl
-*.plg
-*.aps
-*.ncb
-*.opt
 Debug
 Release
-_release
-*__Win32_*
-/innosetup/installs
+blitzide.prefs
+*.exe
+*.dll
+*.pdb
+*.ilk
+.vs
