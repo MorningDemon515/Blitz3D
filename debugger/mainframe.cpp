@@ -8,7 +8,7 @@
 #define WM_IDLEUPDATECMDUI  0x0363  // wParam == bDisableIfNoHandler
 
 enum{
-	WM_STOP=WM_USER+1,WM_RUN,WM_END
+	WM_STOP=WM_APP+1,WM_RUN,WM_END
 };
 
 enum{
@@ -285,8 +285,8 @@ SourceFile *MainFrame::sourceFile(const char *file){
 
 	file_tabs.insert( make_pair(file,tab) );
 
-	if( char *p=strrchr(file,'/') ) file=p+1;
-	if( char *p=strrchr(file,'\\') ) file=p+1;
+	if( const char *p=strrchr(file,'/') ) file=p+1;
+	if( const char *p=strrchr(file,'\\') ) file=p+1;
 	tabber.insert( tab,t,file );
 
 	tabber.setCurrent( tab );

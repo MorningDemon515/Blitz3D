@@ -148,6 +148,7 @@ string itoa( int n ){
 	return string( buff );
 }
 
+/*
 static int _finite( double n ){		// definition: exponent anything but 2047.
 
 	int e;					// 11 bit exponent
@@ -180,6 +181,7 @@ static int _isnan( double n ){		// definition: exponent 2047, nonzero fraction.
 
 	return  ( fHi | fLo ) != 0;	// returns 0,1 not just 0,nonzero
 }
+*/
 
 /////////////
 //By FLOYD!//

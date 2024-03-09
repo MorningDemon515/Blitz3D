@@ -26,6 +26,8 @@ using namespace std;
 #include "../compiler/codegen_x86/codegen_x86.h"
 #include "../bbruntime_dll/bbruntime_dll.h"
 
+#undef environ
+
 static void showInfo(){
 	const int major=(VERSION&0xffff)/100,minor=(VERSION&0xffff)%100;
 	cout<<"BlitzCC V"<<major<<"."<<minor<<endl;

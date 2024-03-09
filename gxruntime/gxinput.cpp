@@ -11,27 +11,31 @@ class Device : public gxDevice{
 public:
 	bool acquired;
 	gxInput *input;
-	IDirectInputDevice7 *device;
+	IDirectInputDevice8 *device;
 
-	Device( gxInput *i,IDirectInputDevice7 *d ):input(i),acquired(false),device(d){
+	Device( gxInput *i,IDirectInputDevice8 *d ):input(i),acquired(false),device(d){
 	}
 	virtual ~Device(){
-		device->Release();
+		if( device ) device->Release();
 	}
 	bool acquire(){
-		return acquired=device->Acquire()>=0;
+		if( device ) return acquired=device->Acquire()>=0;
+		return false;
 	}
 	void unacquire(){
-		device->Unacquire();
+		if( device ) device->Unacquire();
 		acquired=false;
 	}
 };
 
 class Keyboard : public Device{
 public:
-	Keyboard( gxInput *i,IDirectInputDevice7 *d ):Device(i,d){
+	Keyboard( gxInput *i,IDirectInputDevice8 *d ):Device(i,d){
 	}
 	void update(){
+
+		if (!device) return;
+
 		if( !acquired ){
 			input->runtime->idle();
 			return;
@@ -50,9 +54,12 @@ public:
 
 class Mouse : public Device{
 public:
-	Mouse( gxInput *i,IDirectInputDevice7 *d ):Device(i,d){
+	Mouse( gxInput *i,IDirectInputDevice8 *d ):Device(i,d){
 	}
 	void update(){
+
+		if (!device) return;
+
 		if( !acquired ){
 			input->runtime->idle();
 			return;
@@ -80,7 +87,7 @@ class Joystick : public Device{
 public:
 	int type,poll_time;
 	int mins[12],maxs[12];
-	Joystick( gxInput *i,IDirectInputDevice7 *d,int t ):Device(i,d),type(t),poll_time(0){
+	Joystick( gxInput *i,IDirectInputDevice8 *d,int t ):Device(i,d),type(t),poll_time(0){
 		for( int k=0;k<12;++k ){
 			//initialize joystick axis ranges (d'oh!)
 			DIPROPRANGE range;
@@ -130,8 +137,12 @@ static Mouse *mouse;
 static vector<Joystick*> joysticks;
 					  
 static Keyboard *createKeyboard( gxInput *input ){
-	IDirectInputDevice7 *dev;
-	if( input->dirInput->CreateDeviceEx( GUID_SysKeyboard,IID_IDirectInputDevice7,(void**)&dev,0 )>=0 ){
+
+	return d_new Keyboard(input, 0);
+
+	IDirectInputDevice8 *dev;
+	if( input->dirInput->CreateDevice( GUID_SysKeyboard,(IDirectInputDevice8**)&dev,0 )>=0 ){
+
 		if( dev->SetCooperativeLevel( input->runtime->hwnd,DISCL_FOREGROUND|DISCL_EXCLUSIVE )>=0 ){
 
 			if( dev->SetDataFormat( &c_dfDIKeyboard )>=0 ){
@@ -150,6 +161,7 @@ static Keyboard *createKeyboard( gxInput *input ){
 			}else{
 //				input->runtime->debugInfo( "keyboard: SetDataFormat failed" );
 			}
+
 			return d_new Keyboard( input,dev );
 
 		}else{
@@ -157,21 +169,28 @@ static Keyboard *createKeyboard( gxInput *input ){
 		}
 		dev->Release();
 	}else{
-		input->runtime->debugInfo( "keyboard: CreateDeviceEx failed" );
+		input->runtime->debugInfo( "keyboard: CreateDevice failed" );
 	}
 	return 0;
 }
 
 static Mouse *createMouse( gxInput *input ){
-	IDirectInputDevice7 *dev;
-	if( input->dirInput->CreateDeviceEx( GUID_SysMouse,IID_IDirectInputDevice7,(void**)&dev,0 )>=0 ){
-		if( dev->SetCooperativeLevel( input->runtime->hwnd,DISCL_FOREGROUND|DISCL_EXCLUSIVE )>=0 ){
+
+	return d_new Mouse(input, 0);
+
+	IDirectInputDevice8 *dev;
+	if( input->dirInput->CreateDevice( GUID_SysMouse,(IDirectInputDevice8**)dev,0 )>=0 ){
+
+		if( dev->SetCooperativeLevel( input->runtime->hwnd,DISCL_FOREGROUND|DISCL_EXCLUSIVE )>=0 ){	//crashes on dinput8!
+
+			return d_new Mouse(input, dev);
 
 			if( dev->SetDataFormat( &c_dfDIMouse )>=0 ){
 				return d_new Mouse( input,dev );
 			}else{
 //				input->runtime->debugInfo( "mouse: SetDataFormat failed" );
 			}
+
 			return d_new Mouse( input,dev );
 
 		}else{
@@ -179,17 +198,17 @@ static Mouse *createMouse( gxInput *input ){
 		}
 		dev->Release();
 	}else{
-		input->runtime->debugInfo( "mouse: CreateDeviceEx failed" );
+		input->runtime->debugInfo( "mouse: CreateDevice failed" );
 	}
 	return 0;
 }
 
 static Joystick *createJoystick( gxInput *input,LPCDIDEVICEINSTANCE devinst ){
-	IDirectInputDevice7 *dev;
-	if( input->dirInput->CreateDeviceEx( devinst->guidInstance,IID_IDirectInputDevice7,(void**)&dev,0 )>=0 ){
+	IDirectInputDevice8 *dev;
+	if( input->dirInput->CreateDevice( devinst->guidInstance,(IDirectInputDevice8**)&dev,0 )>=0 ){
 		if( dev->SetCooperativeLevel( input->runtime->hwnd,DISCL_FOREGROUND|DISCL_EXCLUSIVE )>=0 ){
 			if( dev->SetDataFormat( &c_dfDIJoystick )>=0 ){
-				int t=((devinst->dwDevType>>8)&0xff)==DIDEVTYPEJOYSTICK_GAMEPAD ? 1 : 2;
+				int t=((devinst->dwDevType>>8)&0xff)==DI8DEVTYPE_GAMEPAD ? 1 : 2;
 				return d_new Joystick( input,dev,t );
 			}
 		}
@@ -200,7 +219,7 @@ static Joystick *createJoystick( gxInput *input,LPCDIDEVICEINSTANCE devinst ){
 
 static BOOL CALLBACK enumJoystick( LPCDIDEVICEINSTANCE devinst,LPVOID pvRef ){
 
-	if( (devinst->dwDevType&0xff)!=DIDEVTYPE_JOYSTICK ) return DIENUM_CONTINUE;
+	if( (devinst->dwDevType&0xff)!=DI8DEVTYPE_JOYSTICK ) return DIENUM_CONTINUE;
 
 	if( Joystick *joy=createJoystick( (gxInput*)pvRef,devinst ) ){
 		joysticks.push_back( joy );
@@ -208,12 +227,12 @@ static BOOL CALLBACK enumJoystick( LPCDIDEVICEINSTANCE devinst,LPVOID pvRef ){
 	return DIENUM_CONTINUE;
 }
 
-gxInput::gxInput( gxRuntime *rt,IDirectInput7 *di ):
+gxInput::gxInput( gxRuntime *rt,IDirectInput8 *di ):
 runtime(rt),dirInput(di){
-	keyboard=createKeyboard( this );
-	mouse=createMouse( this );
+	keyboard = createKeyboard(this);
+	mouse = createMouse(this);
 	joysticks.clear();
-	dirInput->EnumDevices( DIDEVTYPE_JOYSTICK,enumJoystick,this,DIEDFL_ATTACHEDONLY );
+	dirInput->EnumDevices( DI8DEVTYPE_JOYSTICK,enumJoystick,this,DIEDFL_ATTACHEDONLY );
 }
 
 gxInput::~gxInput(){
