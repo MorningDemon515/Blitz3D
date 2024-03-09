@@ -238,6 +238,7 @@ gxFont *gxGraphics::loadFont( const string &f,int height,int flags ){
 
 	string t;
 	int n=f.find('.');
+
 	if( n!=string::npos ){
 		t=fullfilename(f);
 		if( !font_res.count(t) && AddFontResource( t.c_str() ) ) font_res.insert( t );
@@ -256,7 +257,8 @@ gxFont *gxGraphics::verifyFont( gxFont *f ){
 }
 
 void gxGraphics::freeFont( gxFont *f ){
-	if( font_set.erase( f ) ) delete f;
+	
+	if (font_set.erase(f)) delete f;
 }
 
 //////////////
