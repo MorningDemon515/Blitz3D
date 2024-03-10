@@ -52,7 +52,19 @@ static void _cdecl seTranslator( unsigned int u,EXCEPTION_POINTERS* pExp ){
 	case EXCEPTION_INT_DIVIDE_BY_ZERO:
 		bbruntime_panic( "Integer divide by zero" );
 	case EXCEPTION_ACCESS_VIOLATION:
-		bbruntime_panic( "Memory access violation" );
+		// bbruntime_panic("Memory access violation");
+		if (ErrorLog::memoryAccessViolation == 0) {
+			bbruntime_panic("Memory access violation");
+		}
+		else {
+			string s = "";
+			for (int i = 0; i < ErrorLog::size; i++) {
+				if (!ErrorLog::memoryAccessViolation[i].empty()) {
+					s = s + ErrorLog::memoryAccessViolation[i] + "\n";
+				}
+			}
+			bbruntime_panic(s.c_str());
+		}
 	case EXCEPTION_ILLEGAL_INSTRUCTION:
 		bbruntime_panic( "Illegal instruction" );
 	case EXCEPTION_STACK_OVERFLOW:

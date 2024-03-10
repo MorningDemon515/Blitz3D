@@ -3,6 +3,9 @@
 #include "bbsys.h"
 #include "bbruntime.h"
 
+std::string* ErrorLog::memoryAccessViolation = 0;
+int ErrorLog::size = 0;
+
 void  bbEnd(){
 	RTEX( 0 );
 }
@@ -24,9 +27,39 @@ void  bbRuntimeError( BBStr *str ){
 	RTEX( err );
 }
 
-void bbErrorLog()
+string bbErrorStr()
 {
+	string s = "";
+	for (int i = 0; i < ErrorLog::size; i++) {
+		if (!ErrorLog::memoryAccessViolation[i].empty()) {
+			s = s + ErrorLog::memoryAccessViolation[i] + "\n";
+		}
+	}
+
+	return s;
+}
+
+BBStr* bbErrorLog()
+{
+	if (ErrorLog::size == 0)
+	{
+		BBStr* retVal = d_new BBStr(ErrorLog::memoryAccessViolation[0].c_str());
+        return retVal;
+	}
 	
+}
+
+void bbInitError(int number) {
+	delete[] ErrorLog::memoryAccessViolation;
+	ErrorLog::memoryAccessViolation = new std::string[number];
+	ErrorLog::size = number;
+}
+
+void bbSetError(int pos, BBStr* str) {
+	if (ErrorLog::memoryAccessViolation != 0 && pos < ErrorLog::size) {
+		ErrorLog::memoryAccessViolation[pos] = *str;
+	}
+	delete str;
 }
 
 int   bbExecFile( BBStr *f ){
@@ -156,6 +189,10 @@ void bbruntime_link( void (*rtSym)( const char *sym,void *pc ) ){
 	rtSym( "Stop",bbStop );
 	rtSym( "AppTitle$title$close_prompt=\"\"",bbAppTitle );
 	rtSym( "RuntimeError$message",bbRuntimeError );
+	rtSym( "$ErrorStr",bbErrorStr);
+	rtSym( "$ErrorLog", bbErrorLog);
+	rtSym( "InitError%number", bbInitError);
+	rtSym( "SetError%pos$str", bbSetError);
 	rtSym( "ExecFile$command",bbExecFile );
 	rtSym( "Delay%millisecs",bbDelay );
 	rtSym( "%MilliSecs",bbMilliSecs );
