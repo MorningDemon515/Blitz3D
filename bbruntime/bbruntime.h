@@ -24,4 +24,6 @@ public:
 	static int size;
 };
 
+extern std::vector<std::string> errorLog;
+
 #endif

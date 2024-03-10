@@ -55,6 +55,7 @@ static void _cdecl seTranslator( unsigned int u,EXCEPTION_POINTERS* pExp ){
 		// bbruntime_panic("Memory access violation");
 		if (ErrorLog::memoryAccessViolation == 0) {
 			bbruntime_panic("Memory access violation");
+			errorLog.push_back(std::string( "Memory access violation" ));
 		}
 		else {
 			string s = "";

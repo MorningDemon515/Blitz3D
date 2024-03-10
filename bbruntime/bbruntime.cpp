@@ -6,6 +6,8 @@
 std::string* ErrorLog::memoryAccessViolation = 0;
 int ErrorLog::size = 0;
 
+std::vector<std::string> errorLog;
+
 void  bbEnd(){
 	RTEX( 0 );
 }
@@ -27,26 +29,11 @@ void  bbRuntimeError( BBStr *str ){
 	RTEX( err );
 }
 
-string bbErrorStr()
-{
-	string s = "";
-	for (int i = 0; i < ErrorLog::size; i++) {
-		if (!ErrorLog::memoryAccessViolation[i].empty()) {
-			s = s + ErrorLog::memoryAccessViolation[i] + "\n";
-		}
-	}
-
-	return s;
-}
-
-BBStr* bbErrorLog()
-{
-	if (ErrorLog::size == 0)
-	{
-		BBStr* retVal = d_new BBStr(ErrorLog::memoryAccessViolation[0].c_str());
-        return retVal;
-	}
-	
+BBStr* bbErrorLog() {
+	if (errorLog.size() == 0) { return d_new BBStr(""); }
+	BBStr* retVal = d_new BBStr(errorLog[0].c_str());
+	errorLog.erase(errorLog.begin());
+	return retVal;
 }
 
 void bbInitError(int number) {
@@ -189,7 +176,6 @@ void bbruntime_link( void (*rtSym)( const char *sym,void *pc ) ){
 	rtSym( "Stop",bbStop );
 	rtSym( "AppTitle$title$close_prompt=\"\"",bbAppTitle );
 	rtSym( "RuntimeError$message",bbRuntimeError );
-	rtSym( "$ErrorStr",bbErrorStr);
 	rtSym( "$ErrorLog", bbErrorLog);
 	rtSym( "InitError%number", bbInitError);
 	rtSym( "SetError%pos$str", bbSetError);
