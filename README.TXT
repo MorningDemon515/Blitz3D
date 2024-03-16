@@ -3,21 +3,23 @@ Blitz3D open source release.
 
 To build Blitz3D you will need:
 
-* Visual Studio Community 2017. Install "Desktop development with C++" plus "MFC and ATL support" plus "ASP.NET and web development".
+* Visual Studio Community 2019. Install "Desktop development with C++" plus "MFC and ATL support" plus "ASP.NET and web development".
 
 Too lazy to build? Grab the prebuilt version from https://blitzresearch.itch.io/
 
 Steps to build:
 
-1) Open blitz3d.dsw in virtual studio 2017.
+1) Open blitz3d.sln in virtual studio 2019.
 
 2) Select release config and rebuild the entire solution.
 
 3) All done! You can find output files in the _release and _release/bin dirs. Feel free to delete .pdb and .ilk files here.
 
-4) Note: This version of blitzplus uses the dynamic version of the fmod audio lib. When redistributing programs built with blitzplus_msvc2017, you will need to also include the fmod.dll file found in the _runtime/bin directory with your programs. This should be placed in the same directory as your program's executable.
+4) Note: This version of blitzplus uses the dynamic version of the fmod audio lib.  you will need to also include the fmod.dll file found in the _runtime/bin directory with your programs. This should be placed in the same directory as your program's executable.You can find it in releases.
 
 5) You can also try building the debug version, although this hasn't been well tested.
+
+6) Create a new folder in the release and name it "userlibs"
 
 Blitz3d is released under the zlib/libpng license.
 
