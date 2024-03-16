@@ -188,13 +188,14 @@
     <ClInclude Include="libs.h" />
     <ClInclude Include="mainframe.h" />
     <ClInclude Include="prefs.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="tabber.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="b3dlogo.bmp" />
-    <Image Include="bplogo.bmp" />
-    <Image Include="IDE (logo, no code) 32.ico" />
+    <Image Include="blitzide.ico" />
+    <Image Include="icon2.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

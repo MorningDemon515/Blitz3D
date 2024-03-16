@@ -200,7 +200,8 @@ int Editor::OnCreate( LPCREATESTRUCT cs ){
 		ES_MULTILINE|ES_AUTOHSCROLL|ES_AUTOVSCROLL|ES_NOHIDESEL,
 		r,this,1 );
 	editCtrl.SetFont( &prefs.editFont );
-	editCtrl.SetBackgroundColor( false,prefs.rgb_bkgrnd );
+	int kk = RGB (64, 224, 208);
+	editCtrl.SetBackgroundColor(  false,kk);
 	editCtrl.SetDefaultCharFormat( fmt );
 	editCtrl.SetEventMask( ENM_CHANGE|ENM_PROTECTED|ENM_KEYEVENTS|ENM_MOUSEEVENTS|ENM_SELCHANGE );
 	editCtrl.SetParaFormat( pf );
@@ -221,19 +222,19 @@ int Editor::OnCreate( LPCREATESTRUCT cs ){
 
 	funcList.Create( ws|LVS_LIST|LVS_SHOWSELALWAYS,r,&tabber,1 );
 	funcList.SetFont( &prefs.debugFont );
-	funcList.SetBkColor( bk );
+	funcList.SetBkColor(kk);
 	funcList.SetTextColor( fg );
 	funcList.SetTextBkColor( bk );
 
 	typeList.Create( ws|LVS_LIST|LVS_SHOWSELALWAYS,r,&tabber,2 );
 	typeList.SetFont( &prefs.debugFont );
-	typeList.SetBkColor( bk );
+	typeList.SetBkColor(kk);
 	typeList.SetTextColor( fg );
 	typeList.SetTextBkColor( bk );
 
 	labsList.Create( ws|LVS_LIST|LVS_SHOWSELALWAYS,r,&tabber,3 );
 	labsList.SetFont( &prefs.debugFont );
-	labsList.SetBkColor( bk );
+	labsList.SetBkColor(kk);
 	labsList.SetTextColor( fg );
 	labsList.SetTextBkColor( bk );
 

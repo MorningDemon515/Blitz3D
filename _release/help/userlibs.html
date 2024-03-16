@@ -1,0 +1,167 @@
+<html>
+<meta charset="utf-8">
+<style>
+body{
+	color: #ffffff;
+	font: 14pt verdana;
+	background: #00ffff;
+	margin: 32px;
+}
+h1{
+	color: #c0c0c0;
+	font: bold 50pt verdana;
+}
+
+a{
+	color: #ffff00;
+	text-decoration: none;
+}
+
+a:hover{
+	color: #00ff44;
+	text-decoration: underline;
+}
+
+ul{
+	color: #ffffff;
+	list-style-type: disc;
+	margin: 16px;
+}
+
+</style>
+
+<body>
+<h1>Userlibs</h1>
+You can use it to add new functions and features to Blitz3D-MD<br>
+<br>
+The library of Blitz3D generally consists of. DLL files and. decls files, where. DLL files contain the functions we want to use in Blitz3D, and the functions in. DLL are applied to Blitz3D through. decls files. If there is no. DLL file, even if the. decls file is written well, it is just an empty shell and cannot be used. If there is no. decls file, no matter how well the. DLL file is written, calling a function is useless (unless the. DLL file you write does not require calling a function). In short, both. dl and. decls files are indispensable.<br>
+<br>
+Firstly, let's take a look at the format of the. decls file<br>
+<br>
+Each. decls file should start with the. lib directive, followed by a space and the. DLL file to be used. Example:<br>
+<br>
+. lib "mylib. dl"<br>
+<br>
+Afterwards, you must define the function columns to be used. The requirements are as follows:<br>
+<br>
+Default parameter values are not allowed.<br>
+If the function return type is not specified, the function is of type "void" - that is, it does not return anything.<br>
+Only "*" type markers can be used to specify the "void *" parameter, and object parameters cannot be specified. Such parameters can be assigned to any object, so be careful!<br>
+The declaration must be immediately followed by the C modifier name The following is the cited decorative name. Example:<br>
+MyFunction (text $):“ _MyFunction@4 “<br>
+VecDistance # (x1 #, y1 #, z1 #, x2 #, y2 #, z2 #)<br>
+:“ _VecDistance@24 “<br>
+<br>
+Here is an example of a. decls file<br>
+<br>
+MyLib. docs:<br>
+. lib "mylib. dl"<br>
+<br>
+VecDistance # (x1 #, y1 #, z1 #, x2 #, y2 #, z2 #)<br>
+:“ _VecDistance@24 “<br>
+Ping $():“ _Ping@0 “<br>
+<br>
+<br>
+The following is the format of the. DLL file:<br>
+<br>
+The following are the requirements for writing. DLL files:<br>
+<br>
+The _stdcall calling convention must be used.<br>
+Pass and return floating-point values according to standard C/C++calling conventions.<br>
+The string must be in C format (const char *) or std:: string format.<br>
+Storage and objects can be passed into functions. The value passed is a pointer to the first byte stored. However, it is not possible to pass information about the type or size of memory, so extra caution should be taken when doing so<br>
+Functions cannot return libraries and objects, and arrays are not supported in any way.<br>
+C++name tampering is not allowed, and extern "C" must be used<br>
+Here is how to write. DLL:<br>
+<br>
+Open Visual Studio and create a Dynamic Link Library project.<br>
+Delete all files and turn off "precompiled headers" in project settings.<br>
+Write code.<br>
+Build it.<br>
+Complete.<br>
+Attention! When creating an exe file for a game, the. DLL file must be placed in the game directory<br>
+<br>
+Here is an example of a. DLL file<br>
+<br>
+Mylib. h:<br>
+#Pragma once<br>
+<br>
+
+
+#Include<math. h><br>
+
+#Include<string. h><br>
+
+#Include<stdlib. h><br>
+
+
+<br>
+//Easy to use macros!<br>
+
+#Define BLITZ3D (x) extern "C" _declspec (dllexport) x_stdcall<br>
+
+<br>
+
+BLITZ3D (float) VecDistance (float x1, float y1, float z1, float x2, float y2, float z2);<br>
+
+
+<br>
+BLITZ3D (const char *) Ping();<br>
+
+
+<br>
+MyLib.cpp:<br>
+<br>
+
+#Include "MyLib. h"<br>
+<br>
+BLITZ3D (float) VecDistance (float x1, float y1,<br>
+<br>
+Float z1, float x2, float y2, float z2)<br>
+<br>
+{<br>
+<br>
+Float dx=x1- x2<br>
+<br>
+Float dy=y1- y2<br>
+<br>
+Float dz=z1- z2;<br>
+<br>
+Return sqrtf (dx * dx+dy * dy+dz * dz);<br>
+}<br>
+<br>
+BLITZ3D (const char *) Ping()<br>
+<br>
+{<br>
+
+Return "Pong";<br>
+<br>
+}<br>
+
+<br>
+
+Usage:<br>
+<br>
+Put the exported. DLL file and the written. decls file into Blitz3D<br>
+<br>
+Directory in the userlib folder, and then call you to write<br>
+<br>
+Then compile and run the function.<br>
+<br>
+After ensuring that there are no issues with the game, export the exe file and export the. DLL file<br>
+<br>
+Place the item in the game directory.<br>
+<br>
+
+
+Release:<br>
+<br>
+Package. DLL and. decls, and also package the usage examples,<br>
+<br>
+If necessary, add reference files and finally create a compressed file for publication!<br>
+<br>
+
+
+
+</body>
+</html>

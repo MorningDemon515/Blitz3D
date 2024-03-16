@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
-// Microsoft Developer Studio generated include file.
-// Used by blitzide.rc
+// Microsoft Visual C++ 生成的包含文件。
+// 供 blitzide.rc 使用
 //
 #define IDR_MAINFRAME                   101
 #define IDD_COMPILING                   123
@@ -9,6 +9,7 @@
 #define IDD_COMMANDLINE                 129
 #define IDD_ABOUT                       130
 #define IDB_BITMAP2                     132
+#define IDI_ICON1                       134
 #define IDC_COMPILEPROGRESS             1005
 #define IDC_CMDLINE                     1018
 #define IDC_VERSION                     1020
@@ -73,7 +74,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        133
+#define _APS_NEXT_RESOURCE_VALUE        136
 #define _APS_NEXT_COMMAND_VALUE         40133
 #define _APS_NEXT_CONTROL_VALUE         1025
 #define _APS_NEXT_SYMED_VALUE           101

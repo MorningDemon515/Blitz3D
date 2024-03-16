@@ -1,0 +1,6 @@
+---v1.000---
+
+- Added drag to open file
+- FastExt Killer
+- Support UTF8
+- ErrorLog
