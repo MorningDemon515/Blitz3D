@@ -1,13 +1,13 @@
 [Setup]
-OutputBaseFilename=Blitz3DSetup1108
+OutputBaseFilename=Blitz3D-MD Setup
 OutputDir=.\
 
-AppName=Blitz3D
-AppVerName=Blitz3D 1.108
-AppPublisher=Blitz Research Ltd
+AppName=Blitz3D-MD
+AppVerName=Blitz3D-MD 1.0
+AppPublisher=Blitz Research Ltd,MDStudio
 AppPublisherURL=http://www.blitzbasic.com
-DefaultDirName={pf}\Blitz3D
-DefaultGroupName=Blitz3D
+DefaultDirName={pf}\Blitz3D-MD
+DefaultGroupName=Blitz3D-MD
 
 AllowRootDirectory=yes
 DisableStartupPrompt=yes

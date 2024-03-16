@@ -5,9 +5,9 @@
 #include "animation.h"
 #include "pivot.h"
 
-#include "minidx9/include/dxfile.h"
-#include "minidx9/include/rmxfguid.h"
-#include "minidx9/include/rmxftmpl.h"
+#include "../minidx9/include/dxfile.h"
+#include "../minidx9/include/rmxfguid.h"
+#include "../minidx9/include/rmxftmpl.h"
 
 extern gxRuntime *gx_runtime;
 static map<string,MeshModel*> frames_map;

@@ -19,11 +19,12 @@ int SourceFile::OnCreate( LPCREATESTRUCT lpCreateStruct ){
 
 	SetReadOnly( true );
 	SetFont( &prefs.editFont );
-	SetBackgroundColor( false,prefs.rgb_bkgrnd );
+	int kk = RGB(64, 224, 208);
+	SetBackgroundColor( false,kk );
 
 	CHARFORMAT fmt={sizeof( fmt )};
 	fmt.dwMask=CFM_COLOR;
-	fmt.crTextColor=prefs.rgb_default;
+	fmt.crTextColor=kk;
 
 	SetSel( 0,-1 );
 	SetDefaultCharFormat( fmt );
