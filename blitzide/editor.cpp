@@ -252,6 +252,7 @@ void Editor::setName( const string &n ){
 	name=n;
 }
 
+/*
 bool Editor::setText( istream &in ){
 //	editCtrl.HideCaret();
 	fmtBusy=true;
@@ -275,6 +276,27 @@ bool Editor::setText( istream &in ){
 	caret();
 	return es.dwError==0;
 }
+*/
+
+bool Editor::setText(istream& in) {
+	fmtBusy = true;
+	std::stringstream buffer;
+	buffer << in.rdbuf(); // 从输入流中读取数据到缓冲区
+
+	// 将UTF-8格式的文本转换成wstring
+	std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
+	std::wstring wideText = converter.from_bytes(buffer.str());
+
+	// 转换为CString类型
+	CString cstrText(wideText.c_str());
+
+	// 设置编辑控件的文本
+	editCtrl.SetWindowText(cstrText);
+
+	fmtBusy = false;
+	caret();
+	return true; // 或者根据需要返回其他值
+}
 
 void Editor::setModified( bool n ){
 	editCtrl.SetModify( n );
@@ -290,6 +312,7 @@ string Editor::getName()const{
 	return name;
 }
 
+/*
 bool Editor::getText( ostream &out ){
 	fixFmt(true);
 	EDITSTREAM es;
@@ -299,7 +322,27 @@ bool Editor::getText( ostream &out ){
 	editCtrl.StreamOut( SF_TEXT,es );
 	return es.dwError==0;
 }
+*/
 
+bool Editor::getText(ostream& out) {
+	fixFmt(true); // 可能是用于修正格式的一些设置
+
+	// 创建一个内存输出流
+	std::ostringstream utf8Stream;
+
+	EDITSTREAM es;
+	es.dwCookie = (DWORD)&utf8Stream;
+	es.dwError = 0;
+	es.pfnCallback = streamOut;
+
+	// 从编辑控件中将文本以UTF-8格式写入内存输出流
+	editCtrl.StreamOut(SF_TEXT, es);
+
+	// 将UTF-8格式的文本写入指定的输出流
+	out << utf8Stream.str();
+
+	return es.dwError == 0;
+}
 void Editor::cut(){
 	editCtrl.Cut();
 }
