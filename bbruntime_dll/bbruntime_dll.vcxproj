@@ -170,7 +170,7 @@
     <Image Include="bbexe.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Library Include="..\blitz3d\minidx9\lib\d3dxof.lib" />
+    <Library Include="..\minidx9\lib\d3dxof.lib" />
     <Library Include="..\fmod375\lib\fmodvc.lib" />
     <Library Include="..\freetype\lib\freetype.lib" />
   </ItemGroup>
