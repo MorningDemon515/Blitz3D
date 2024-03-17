@@ -446,7 +446,6 @@ bool MainFrame::close( int n ){
 	return true;
 }
 
-/*
 bool MainFrame::save( int n ){
 
 	Editor *e=getEditor( n );
@@ -483,53 +482,7 @@ bool MainFrame::save( int n ){
 	cursorMoved( e );
 	return true;
 }
-*/
 
-bool MainFrame::save(int n) {
-	Editor* e = getEditor(n);
-	if (!e)
-		return true;
-	string t = e->getName();
-	if (!t.size()) {
-		tabber.setCurrent(n);
-		int df = OFN_NOCHANGEDIR | OFN_PATHMUSTEXIST | OFN_HIDEREADONLY | OFN_EXPLORER | OFN_OVERWRITEPROMPT;
-		CFileDialog fd(false, "bb", "*.bb", df, bbFilter);
-		fd.m_ofn.lpstrTitle = "Save Blitz Basic program as...";
-		if (fd.DoModal() == IDCANCEL)
-			return false;
-		t = fd.GetPathName();
-		tabber.setTabText(n, getFile(t));
-		e->setName(t);
-		insertRecent(t);
-	}
-	// Do backups!
-	// if( prefs.edit_backup ){
-	//     for( int k=prefs.edit_backup;k>1;--k ){
-	//         CopyFile( (t+"_bak"+itoa(k-1)).c_str(),(t+"_bak"+itoa(k)).c_str(),false );
-	//     }
-	//     CopyFile( t.c_str(),(t+"_bak1").c_str(),false );
-	// }
-
-	// 打开文件流以写入UTF-8编码的文本
-	std::ofstream out(t.c_str(), std::ios::binary | std::ios::out | std::ios::trunc);
-	if (!out.good()) {
-		string e = "Error writing file \"" + t + "\"";
-		AfxMessageBox(e.c_str(), MB_ICONWARNING);
-		return false;
-	}
-
-	// 设置locale为UTF-8，以便正确写入UTF-8编码的文本
-	std::locale utf8_locale(std::locale(), new std::codecvt_utf8<char>());
-	out.imbue(utf8_locale);
-
-	// 将文本内容写入文件
-	e->getText(out);
-
-	out.close();
-	e->setModified(false);
-	cursorMoved(e);
-	return true;
-}
 
 void MainFrame::fileNew(){
 	newed( "" );
