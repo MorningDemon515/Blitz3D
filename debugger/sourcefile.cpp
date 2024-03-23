@@ -19,7 +19,7 @@ int SourceFile::OnCreate( LPCREATESTRUCT lpCreateStruct ){
 
 	SetReadOnly( true );
 	SetFont( &prefs.editFont );
-	int kk = RGB(64, 224, 208);
+	int kk = RGB(96, 96, 96);
 	SetBackgroundColor( false,kk );
 
 	CHARFORMAT fmt={sizeof( fmt )};

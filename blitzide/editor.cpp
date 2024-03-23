@@ -200,7 +200,7 @@ int Editor::OnCreate( LPCREATESTRUCT cs ){
 		ES_MULTILINE|ES_AUTOHSCROLL|ES_AUTOVSCROLL|ES_NOHIDESEL,
 		r,this,1 );
 	editCtrl.SetFont( &prefs.editFont );
-	int kk = RGB (64, 224, 208);
+	int kk = RGB (96, 96, 96);
 	editCtrl.SetBackgroundColor(  false,kk);
 	editCtrl.SetDefaultCharFormat( fmt );
 	editCtrl.SetEventMask( ENM_CHANGE|ENM_PROTECTED|ENM_KEYEVENTS|ENM_MOUSEEVENTS|ENM_SELCHANGE );

@@ -394,7 +394,7 @@ bool MainFrame::open( const string &f ){
 	}
 
 	if( isMediaFile( tolower( file ) ) ){
-		string t=prefs.homeDir+"/bin/mediaview.exe";
+		string t=prefs.homeDir+"/mediaview/mediaview.exe";
 		if( (int)ShellExecute( ::GetDesktopWindow(),0,t.c_str(),file.c_str(),0,SW_SHOW )>32 ){
 		}
 		return false;
