@@ -156,14 +156,6 @@ gxRuntime::~gxRuntime(){
 	CoUninitialize();
 }
 
-void gxRuntime::pauseAudio(){
-	if( audio ) audio->pause();
-}
-
-void gxRuntime::resumeAudio(){
-	if( audio ) audio->resume();
-}
-
 void gxRuntime::backupGraphics(){
 	if( auto_suspend ){
 		graphics->backup();
@@ -202,7 +194,7 @@ void gxRuntime::unacquireInput(){
 /////////////
 void gxRuntime::suspend(){
 	busy=true;
-	pauseAudio();
+	//pauseAudio();
 	backupGraphics();
 	unacquireInput();
 	suspended=true;
@@ -221,7 +213,7 @@ void gxRuntime::resume(){
 	busy=true;
 	acquireInput();
 	restoreGraphics();
-	resumeAudio();
+	//resumeAudio();
 	suspended=false;
 	busy=false;
 
@@ -670,15 +662,6 @@ void gxRuntime::setPointerVisible( bool vis ){
 /////////////////
 gxAudio *gxRuntime::openAudio( int flags ){
 	if( audio ) return 0;
-
-	int f_flags=
-		FSOUND_INIT_GLOBALFOCUS|
-		FSOUND_INIT_USEDEFAULTMIDISYNTH;
-
-	FSOUND_SetHWND( hwnd );
-	if( !FSOUND_Init( 44100,1024,f_flags ) ){
-		return 0;
-	}
 
 	audio=d_new gxAudio( this );
 	return audio;

@@ -130,7 +130,7 @@
       <OpenMPSupport>false</OpenMPSupport>
       <MinimalRebuild>false</MinimalRebuild>
       <CallingConvention>StdCall</CallingConvention>
-      <AdditionalIncludeDirectories>..\freetype\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\freetype\include;..\openal\include;..\libogg\include;..\libvorbis\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Midl>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -170,9 +170,12 @@
     <Image Include="bbexe.ico" />
   </ItemGroup>
   <ItemGroup>
+    <Library Include="..\libogg\lib\libogg.lib" />
+    <Library Include="..\libvorbis\lib\libvorbisfile_static.lib" />
+    <Library Include="..\libvorbis\lib\libvorbis_static.lib" />
     <Library Include="..\minidx9\lib\d3dxof.lib" />
-    <Library Include="..\fmod375\lib\fmodvc.lib" />
     <Library Include="..\freetype\lib\freetype.lib" />
+    <Library Include="..\openal\libs\Win32\OpenAL32.lib" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\bbruntime\bbruntime.vcxproj">

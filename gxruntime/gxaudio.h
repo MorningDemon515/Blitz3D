@@ -3,46 +3,53 @@
 #define GXAUDIO_H
 
 #include <string>
+#include <set>
 
 #include "gxsound.h"
 
 class gxRuntime;
-struct FSOUND_SAMPLE;
 
-class gxAudio{
+class gxAudio {
 public:
-	gxRuntime *runtime;
+	gxRuntime* runtime;
 
-	gxAudio( gxRuntime *runtime );
+	gxAudio(gxRuntime* runtime);
 	~gxAudio();
 
-	gxChannel *play( FSOUND_SAMPLE *sample );
-	gxChannel *play3d( FSOUND_SAMPLE *sample,const float pos[3],const float vel[3] );
+	std::set<gxSound*> sound_set;
 
-	void pause();
-	void resume();
+	//sample = buffer
+	bool reserveChannel(gxChannel* channel);
 
+	void clearRelatedChannels(gxSound* sound);
+	bool verifyChannel(gxChannel* chan);
+
+	static const float posScale;
 private:
+	ALCdevice* device;
+	ALCcontext* context;
 
+	static const int SOURCE_COUNT = 32;
+
+	int bufferCount = 0;
+	ALuint sources[SOURCE_COUNT];
+	gxChannel* channels[SOURCE_COUNT];
+
+	float listenerPos[3];
+	float listenerTarget[3];
+	float listenerUp[3];
+	float listenerVel[3];
 	/***** GX INTERFACE *****/
 public:
-	enum{
-		CD_MODE_ONCE=1,CD_MODE_LOOP,CD_MODE_ALL
-	};
+	gxSound* verifySound(gxSound* sound);
 
-	gxSound *loadSound( const std::string &filename,bool use_3d );
-	gxSound *verifySound( gxSound *sound );
-	void freeSound( gxSound *sound );
+	void set3dOptions(float roll, float dopp, float dist);
 
-	void setPaused( bool paused );	//master pause
-	void setVolume( float volume );	//master volume
-
-	void set3dOptions( float roll,float dopp,float dist );
-
-	void set3dListener( const float pos[3],const float vel[3],const float forward[3],const float up[3] );
-
-	gxChannel *playCDTrack( int track,int mode );
-	gxChannel *playFile( const std::string &filename,bool use_3d );
+	void set3dListener(const float pos[3], const float vel[3], const float forward[3], const float up[3]);
+	const float* get3dListenerPos();
+	const float* get3dListenerTarget();
+	const float* get3dListenerUp();
+	const float* get3dListenerVel();
 };
 
 #endif
