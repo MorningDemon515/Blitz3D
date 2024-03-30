@@ -30,10 +30,6 @@ Blitz3D was written using Visual Studio 2019 and utilizes fmodapi375win and free
 
 * Done!  
 
-## Userlibs
-
-Uselibs can add more content to Blitz3D-MD. If you want to write your own library or reference someone else's library, please create a userlibs folder in the release folder.
-
 ## Release
 
 Install Ioon Setup Compiler 6 and open setup.iss

@@ -172,7 +172,7 @@
   </ItemGroup>
   <ItemGroup>
     <Library Include="..\fmodapi375win\api\lib\fmodvc.lib" />
-    <Library Include="..\minidx9\lib\d3dxof.lib" />
+    <Library Include="d3dxof.lib" />
     <Library Include="..\freetype\lib\freetype.lib" />
   </ItemGroup>
   <ItemGroup>
