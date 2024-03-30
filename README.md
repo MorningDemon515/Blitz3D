@@ -6,7 +6,7 @@ Blitz3D-MD is an improvement on the basis of Blitz3D, so Blitz3D tutorials can b
 
 # How to build it?
 
-Blitz3D-MD was written using Visual Studio 2019 and utilized some libraries.
+Blitz3D was written using Visual Studio 2019 and utilizes fmodapi375win and freetype. Please note! The freetype here is not official, but is reduced by the function.
 
 ## Preparation work
 
