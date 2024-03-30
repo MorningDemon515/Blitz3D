@@ -154,6 +154,7 @@
       <OutputFile>..\_release\bin\runtime.dll</OutputFile>
       <ImportLibrary>.\Release\runtime.lib</ImportLibrary>
       <AdditionalDependencies>wsock32.lib;amstrmid.lib;winmm.lib;dxguid.lib;ddraw.lib;dsound.lib;dinput8.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -170,8 +171,8 @@
     <Image Include="bbexe.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Library Include="..\minidx9\lib\d3dxof.lib" />
-    <Library Include="..\fmod375\lib\fmodvc.lib" />
+    <Library Include="..\fmodapi375win\api\lib\fmodvc.lib" />
+    <Library Include="d3dxof.lib" />
     <Library Include="..\freetype\lib\freetype.lib" />
   </ItemGroup>
   <ItemGroup>
