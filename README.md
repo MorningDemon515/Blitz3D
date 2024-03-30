@@ -1,10 +1,10 @@
-#Blitz3D-MD open source release!
+# Blitz3D-MD open source release!
 
-#How to use it?
+# How to use it?
 
 Blitz3D-MD is an improvement on the basis of Blitz3D, so Blitz3D tutorials can be universal and you can access [Blitz3D's online documentation](https://kippykip.com/b3ddocs/)
 
-#How to build it?
+# How to build it?
 
 * Download Visual Studio 2019.
 * Install "Desktop development with C++" plus "MFC".
