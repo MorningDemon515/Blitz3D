@@ -76,7 +76,7 @@ static bool clip( const RECT &viewport,RECT *d,RECT *s ){
 	return true;
 }
 
-gxCanvas::gxCanvas( gxGraphics *g,IDirectDrawSurface7 *s,int f ):
+gxCanvas::gxCanvas( gxGraphics *g, ddSurf *s,int f ):
 graphics(g),main_surf(s),surf(0),z_surf(0),flags(f),cube_mode(CUBEMODE_REFLECTION|CUBESPACE_WORLD),
 t_surf(0),cm_mask(0),locked_cnt(0),mod_cnt(0),remip_cnt(0){
 
@@ -96,7 +96,7 @@ t_surf(0),cm_mask(0),locked_cnt(0),mod_cnt(0),remip_cnt(0){
 			}
 			DDSCAPS2 caps={0};
 			caps.dwCaps2=DDSCAPS2_CUBEMAP|n;
-			main_surf->GetAttachedSurface( &caps,&cube_surfs[k] );
+			main_surf->GetAttachedSurface(LPDDSCAPS(&caps),&cube_surfs[k] );
 		}
 		surf=cube_surfs[1];
 	}else{
@@ -105,7 +105,7 @@ t_surf(0),cm_mask(0),locked_cnt(0),mod_cnt(0),remip_cnt(0){
 	}
 
 	DDSURFACEDESC2 desc={sizeof(desc)};
-	surf->GetSurfaceDesc( &desc );
+	surf->GetSurfaceDesc( LPDDSURFACEDESC(&desc) );
 	format.setFormat( desc.ddpfPixelFormat );
 
 	clip_rect.left=clip_rect.top=0;
@@ -135,7 +135,7 @@ void gxCanvas::backup()const{
 
 	if( !t_surf ){
 		DDSURFACEDESC2 desc={sizeof(desc)};
-		if( surf->GetSurfaceDesc(&desc)<0 ) return;
+		if( surf->GetSurfaceDesc(LPDDSURFACEDESC(&desc))<0 ) return;
 		if( desc.ddsCaps.dwCaps & DDSCAPS_SYSTEMMEMORY ) return;
 
 		DDSURFACEDESC2 t_desc={sizeof(t_desc)};
@@ -144,7 +144,7 @@ void gxCanvas::backup()const{
 		t_desc.dwWidth=desc.dwWidth;t_desc.dwHeight=desc.dwHeight;
 		t_desc.ddpfPixelFormat=desc.ddpfPixelFormat;
 
-		if( graphics->dirDraw->CreateSurface( &t_desc,&t_surf,0 )<0 ){
+		if( graphics->dirDraw->CreateSurface( LPDDSURFACEDESC(&t_desc), reinterpret_cast<LPDIRECTDRAWSURFACE*>(&t_surf),0 )<0 ){
 			t_surf=0;
 			return;
 		}
@@ -235,7 +235,7 @@ bool gxCanvas::attachZBuffer(){
 	desc.dwHeight=getHeight();
 	desc.ddsCaps.dwCaps=DDSCAPS_ZBUFFER|DDSCAPS_VIDEOMEMORY;
 	desc.ddpfPixelFormat=graphics->zbuffFmt;
-	if( graphics->dirDraw->CreateSurface( &desc,&z_surf,0 )<0 ) return false;
+	if( graphics->dirDraw->CreateSurface(LPDDSURFACEDESC( &desc), reinterpret_cast<LPDIRECTDRAWSURFACE*>(&z_surf),0 )<0 ) return false;
 	surf->AddAttachedSurface( z_surf );
 	return true;
 }
@@ -650,7 +650,7 @@ bool gxCanvas::rect_collide( int x1,int y1,int x2,int y2,int w2,int h2,bool soli
 bool gxCanvas::lock()const{
 	if( !locked_cnt++ ){
 		DDSURFACEDESC2 desc={sizeof(desc)};
-		if( surf->Lock( 0,&desc,DDLOCK_WAIT|DDLOCK_NOSYSLOCK,0 )<0 ){
+		if( surf->Lock( 0, LPDDSURFACEDESC (&desc),DDLOCK_WAIT|DDLOCK_NOSYSLOCK,0 )<0 ){
 			--locked_cnt;
 			return false;
 		}

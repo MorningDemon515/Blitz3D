@@ -24,7 +24,7 @@
 #include <windows.h>
 #include <ddraw.h>
 //#include <dinput.h>
-#include <d3d.h>
+#include <d3d9.h>
 
 using namespace std;
 

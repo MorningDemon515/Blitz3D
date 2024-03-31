@@ -7,7 +7,7 @@
 class gxFont;
 class gxGraphics;
 
-typedef IDirectDrawSurface7 ddSurf;
+typedef IDirectDrawSurface ddSurf;
 
 class gxCanvas{
 public:
@@ -32,7 +32,8 @@ private:
 	int flags,cube_mode;
 	gxGraphics *graphics;
 
-	ddSurf *main_surf,*surf,*z_surf,*cube_surfs[6];
+	ddSurf *surf,*z_surf,*cube_surfs[6];
+	ddSurf *main_surf;
 
 	mutable int mod_cnt;
 	mutable ddSurf *t_surf;
