@@ -143,7 +143,7 @@ void Prefs::setDefault(){
 	font_debug_height=8;
 
 #ifdef PRO
-	rgb_bkgrnd=RGB(0x00, 0xff, 0xff);
+	rgb_bkgrnd=RGB( 0x22,0x55,0x88 );
 	rgb_string=RGB( 0x00,0xff,0x66 );
 	rgb_ident=RGB( 0xff,0xff,0xff );
 	rgb_keyword=RGB( 0xaa,0xff,0xff );
@@ -160,7 +160,7 @@ void Prefs::setDefault(){
 	rgb_digit=	SWAPRB(0x00ffff);
 	rgb_default=SWAPRB(0xffffff);
 #else
-	rgb_bkgrnd=RGB( 0,255,255 );
+	rgb_bkgrnd=RGB( 32,96,96 );
 	rgb_string=RGB( 0,255,0 );
 	rgb_ident=RGB( 255,255,255 );
 	rgb_keyword=RGB( 255,231,95 );

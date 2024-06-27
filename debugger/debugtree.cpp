@@ -19,8 +19,7 @@ DebugTree::~DebugTree(){
 int DebugTree::OnCreate( LPCREATESTRUCT lpCreateStruct ){
 	CTreeCtrl::OnCreate( lpCreateStruct );
 
-	int kk = RGB(64, 224, 208);
-	SetBkColor( kk );
+	SetBkColor( prefs.rgb_bkgrnd );
 	SetTextColor( prefs.rgb_default );
 	SetFont( &prefs.debugFont );
 

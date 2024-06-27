@@ -1,1 +1,0 @@
-d3dxof.lib and d3dput8.lib Form https://github.com/MorningDemon515/minidx9.

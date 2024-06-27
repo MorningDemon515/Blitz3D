@@ -2,7 +2,6 @@
 #include "std.h"
 #include "bbgraphics.h"
 #include "bbinput.h"
-#include "../gxruntime/gxutf8.h"
 
 gxGraphics *gx_graphics;
 gxCanvas *gx_canvas;
@@ -228,13 +227,10 @@ int bbCountGfxDrivers(){
 }
 
 BBStr *	bbGfxDriverName( int n ){
-	debugDriver(n);
-	string t;
-	int caps;
-	gx_runtime->graphicsDriverInfo(n - 1, &t, &caps);
-	CString str(t.c_str());
-	UTF8::ANSItoUTF8(str); // Convert t from ANSI to UTF-8
-	return d_new BBStr(str);
+	debugDriver( n );
+	string t;int caps;
+	gx_runtime->graphicsDriverInfo( n-1,&t,&caps );
+	return d_new BBStr( t );
 }
 
 void  bbSetGfxDriver( int n ){
@@ -623,11 +619,9 @@ gxFont *bbLoadFont( BBStr *name,int height,int bold,int italic,int underline ){
 }
 
 void bbFreeFont( gxFont *f ){
-	/*
 	debugFont( f );
-	if (f == curr_font) bbSetFont(gx_graphics->getDefaultFont());
+	if( f==curr_font ) bbSetFont( gx_graphics->getDefaultFont() );
 	gx_graphics->freeFont( f );
-	*/
 }
 
 int bbFontWidth(){

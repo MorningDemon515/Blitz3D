@@ -4,7 +4,6 @@
 
 #include "tabber.h"
 #include "funclist.h"
-#include <codecvt>
 
 class Editor;
 

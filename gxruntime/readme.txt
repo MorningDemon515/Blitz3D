@@ -1,1 +1,0 @@
-dxfile.h , rmxfguid.h and rmxftmpl.h Form https://github.com/MorningDemon515/minidx9.

@@ -8,8 +8,6 @@
 #include "../shareprot/shareprot.h"
 #endif
 
-#include "../gxruntime/gxutf8.h"
-
 using namespace std;
 
 #include <map>
@@ -27,7 +25,7 @@ public:
 	virtual void debugLeave(){}
 	virtual void debugLog( const char *msg ){}
 	virtual void debugMsg( const char *e,bool serious ){
-		if (serious) MessageBoxW(0, UTF8::convertToUtf16(e).c_str(), L"Error!", MB_OK | MB_TOPMOST | MB_SETFOREGROUND);
+		if( serious ) MessageBox( 0,e,"Error!",MB_OK|MB_TOPMOST|MB_SETFOREGROUND );
 	}
 	virtual void debugSys( void *msg ){}
 };
@@ -52,20 +50,7 @@ static void _cdecl seTranslator( unsigned int u,EXCEPTION_POINTERS* pExp ){
 	case EXCEPTION_INT_DIVIDE_BY_ZERO:
 		bbruntime_panic( "Integer divide by zero" );
 	case EXCEPTION_ACCESS_VIOLATION:
-		// bbruntime_panic("Memory access violation");
-		if (ErrorLog::memoryAccessViolation == 0) {
-			bbruntime_panic("Memory access violation");
-			errorLog.push_back(std::string( "Memory access violation" ));
-		}
-		else {
-			string s = "";
-			for (int i = 0; i < ErrorLog::size; i++) {
-				if (!ErrorLog::memoryAccessViolation[i].empty()) {
-					s = s + ErrorLog::memoryAccessViolation[i] + "\n";
-				}
-			}
-			bbruntime_panic(s.c_str());
-		}
+		bbruntime_panic( "Memory access violation" );
 	case EXCEPTION_ILLEGAL_INSTRUCTION:
 		bbruntime_panic( "Illegal instruction" );
 	case EXCEPTION_STACK_OVERFLOW:
@@ -114,10 +99,8 @@ void Runtime::execute( void (*pc)(),const char *args,Debugger *dbg ){
 
 	trackmem( true );
 
-#ifndef _DEBUG
 	_se_translator_function old_trans=_set_se_translator( seTranslator );
 	_control87( _RC_NEAR|_PC_24|_EM_INVALID|_EM_ZERODIVIDE|_EM_OVERFLOW|_EM_UNDERFLOW|_EM_INEXACT|_EM_DENORMAL,0xfffff );
-#endif
 
 	//strip spaces from ends of args...
 	string params=args;
@@ -136,10 +119,8 @@ void Runtime::execute( void (*pc)(),const char *args,Debugger *dbg ){
 		gxRuntime::closeRuntime( t );
 	}
 
-#ifndef _DEBUG
 	_control87( _CW_DEFAULT,0xfffff );
 	_set_se_translator( old_trans );
-#endif
 }
 
 void Runtime::asyncStop(){
